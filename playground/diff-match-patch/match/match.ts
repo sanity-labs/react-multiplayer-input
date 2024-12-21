@@ -1,4 +1,4 @@
-import {bitap, type BitapOptions} from './bitap.js'
+import {bitap, type BitapOptions} from './bitap'
 
 /**
  * Locate the best instance of 'pattern' in 'text' near 'loc'.

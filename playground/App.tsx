@@ -41,7 +41,10 @@ const createBroadcastStore = (options?: Options) => {
   }
 }
 
-const broadcastValueStore = createBroadcastStore({initialValue: 'f'})
+const INITIAL = `
+foo bar --><-- baz
+`
+const broadcastValueStore = createBroadcastStore({initialValue: INITIAL})
 
 function App() {
   const value = useSyncExternalStore(broadcastValueStore.subscribe, broadcastValueStore.getSnapshot)
