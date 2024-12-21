@@ -1,60 +1,38 @@
-import {Card, Stack, TextInput} from '@sanity/ui'
+import {Card, Heading, Stack, TextArea, TextInput} from '@sanity/ui'
 import {useSyncExternalStore} from 'react'
-import {fromEvent, map, merge, Subject, tap} from 'rxjs'
+import {MultiplayerInput, MultiplayerTextarea} from 'react-multiplayer-input'
 
-import {MultiplayerInput} from './MultiplayerInput'
-
-interface Options {
-  initialValue?: string
-}
-
-const createBroadcastStore = (options?: Options) => {
-  let snapshot = options?.initialValue
-  const bc = new BroadcastChannel('multiplayer_value')
-
-  const updates = new Subject<void>()
-
-  const broadcasts = fromEvent<MessageEvent>(bc, 'message').pipe(
-    tap((event) => {
-      snapshot = event.data
-    }),
-    map((): void => undefined),
-  )
-
-  const subscribe = (callback: () => void) => {
-    const sub = merge(updates, broadcasts).subscribe(callback)
-    return () => {
-      sub.unsubscribe()
-    }
-  }
-
-  function set(nextValue: string) {
-    snapshot = nextValue
-    bc.postMessage(nextValue)
-    updates.next()
-  }
-
-  return {
-    subscribe,
-    getSnapshot: () => snapshot,
-    set,
-  }
-}
+import {type BroadcastStore, createBroadcastStore} from './createBroadcastStore'
 
 const INITIAL = `
 foo bar --><-- baz
 `
-const broadcastValueStore = createBroadcastStore({initialValue: INITIAL})
+
+function useBroadcastValue<T>(store: BroadcastStore<T>): [T | undefined, (nextValue: T) => void] {
+  return [useSyncExternalStore(store.subscribe, store.getSnapshot), store.setSnapshot]
+}
+
+const textInputStore = createBroadcastStore('textinput', INITIAL)
+const textareaStore = createBroadcastStore('textarea', INITIAL)
 
 function App() {
-  const value = useSyncExternalStore(broadcastValueStore.subscribe, broadcastValueStore.getSnapshot)
+  const [inputValue, setInputValue] = useBroadcastValue(textInputStore)
+  const [textareaValue, setTextareaValue] = useBroadcastValue(textareaStore)
   return (
     <Card width="fill" height="fill" padding={2}>
-      <Stack space={3}>
+      <Stack space={4}>
+        <Heading>Text input</Heading>
         <MultiplayerInput
           as={TextInput}
-          value={value}
-          onChange={(e) => broadcastValueStore.set(e.currentTarget.value)}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.currentTarget.value)}
+        />
+        <Heading>Textarea</Heading>
+        <MultiplayerTextarea
+          as={TextArea}
+          value={textareaValue}
+          rows={10}
+          onChange={(e) => setTextareaValue(e.currentTarget.value)}
         />
       </Stack>
     </Card>
