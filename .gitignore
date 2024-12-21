@@ -1,0 +1,5 @@
+dist
+node_modules
+tsconfig.vitest-temp.json
+coverage
+tsconfig.tsbuildinfo
