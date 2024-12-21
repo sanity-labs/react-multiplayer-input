@@ -1,9 +1,9 @@
-import {type ComponentProps, createRef, PureComponent} from 'react'
+import {type ComponentProps, type ComponentType, createRef, PureComponent} from 'react'
 
 import {MAX_BITS} from './diff-match-patch/patch/constants'
 import {captureCursor, type Cursor, restoreCursor} from './utils/cursor'
 
-type Props = ComponentProps<'textarea'>
+type Props = ComponentProps<'textarea'> & {as: ComponentType}
 type State = never
 
 export type UpdateSnapshot = {
@@ -12,7 +12,7 @@ export type UpdateSnapshot = {
 
 const padLength = MAX_BITS / 2
 
-export class MultiplayerTextArea extends PureComponent<Props> {
+export class MultiplayerTextarea extends PureComponent<Props> {
   private inputRef = createRef<HTMLTextAreaElement>()
 
   getSnapshotBeforeUpdate(prevProps: Props): UpdateSnapshot | undefined {
@@ -36,6 +36,7 @@ export class MultiplayerTextArea extends PureComponent<Props> {
   }
 
   render() {
-    return <textarea ref={this.inputRef} {...this.props} />
+    const {as: AsComponent = 'textarea', ...rest} = this.props
+    return <AsComponent {...rest} ref={this.inputRef} />
   }
 }

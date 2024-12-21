@@ -1,9 +1,9 @@
-import {type ComponentProps, createRef, PureComponent} from 'react'
+import {type ComponentProps, type ComponentType, createRef, PureComponent} from 'react'
 
 import {MAX_BITS} from './diff-match-patch/patch/constants'
 import {captureCursor, type Cursor, restoreCursor} from './utils/cursor'
 
-type Props = ComponentProps<'input'>
+type Props = ComponentProps<'input'> & {as: ComponentType}
 type State = never
 
 export type UpdateSnapshot = {
@@ -36,6 +36,7 @@ export class MultiplayerInput extends PureComponent<Props> {
   }
 
   render() {
-    return <input ref={this.inputRef} {...this.props} />
+    const {as: AsComponent = 'input', ...rest} = this.props
+    return <AsComponent {...rest} ref={this.inputRef} />
   }
 }

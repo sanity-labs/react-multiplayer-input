@@ -1,8 +1,8 @@
-import {Card, Stack} from '@sanity/ui'
+import {Card, Stack, TextInput} from '@sanity/ui'
 import {useSyncExternalStore} from 'react'
 import {fromEvent, map, merge, Subject, tap} from 'rxjs'
 
-import {MultiplayerTextArea} from './MultiplayerTextArea'
+import {MultiplayerInput} from './MultiplayerInput'
 
 interface Options {
   initialValue?: string
@@ -51,9 +51,8 @@ function App() {
   return (
     <Card width="fill" height="fill" padding={2}>
       <Stack space={3}>
-        <MultiplayerTextArea
-          rows={10}
-          cols={100}
+        <MultiplayerInput
+          as={TextInput}
           value={value}
           onChange={(e) => broadcastValueStore.set(e.currentTarget.value)}
         />
