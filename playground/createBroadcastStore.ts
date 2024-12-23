@@ -1,13 +1,9 @@
-import {fromEvent, map, merge, Subject, tap} from 'rxjs'
-
-interface Options {
-  initialValue?: string
-}
+import {fromEvent, map, merge, share, Subject, tap} from 'rxjs'
 
 export type BroadcastStore<T> = {
   subscribe: (callback: () => void) => () => void
   getSnapshot: () => T | undefined
-  setSnapshot: (nextValue: T) => void
+  setValue: (nextValue: T) => void
 }
 
 export function createBroadcastStore<T>(name: string, initialValue?: T): BroadcastStore<T> {
@@ -21,6 +17,7 @@ export function createBroadcastStore<T>(name: string, initialValue?: T): Broadca
       snapshot = event.data
     }),
     map((): void => undefined),
+    share(),
   )
 
   const subscribe = (callback: () => void) => {
@@ -30,7 +27,7 @@ export function createBroadcastStore<T>(name: string, initialValue?: T): Broadca
     }
   }
 
-  function setSnapshot(nextValue: T) {
+  function setValue(nextValue: T) {
     snapshot = nextValue
     channel.postMessage(nextValue)
     updates.next()
@@ -39,6 +36,6 @@ export function createBroadcastStore<T>(name: string, initialValue?: T): Broadca
   return {
     subscribe,
     getSnapshot: () => snapshot,
-    setSnapshot,
+    setValue,
   }
 }

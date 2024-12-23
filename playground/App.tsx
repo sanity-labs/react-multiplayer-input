@@ -9,7 +9,7 @@ foo bar --><-- baz
 `
 
 function useBroadcastValue<T>(store: BroadcastStore<T>): [T | undefined, (nextValue: T) => void] {
-  return [useSyncExternalStore(store.subscribe, store.getSnapshot), store.setSnapshot]
+  return [useSyncExternalStore(store.subscribe, store.getSnapshot), store.setValue]
 }
 
 const textInputStore = createBroadcastStore('textinput', INITIAL)
