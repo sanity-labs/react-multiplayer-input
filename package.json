@@ -45,7 +45,10 @@
     "playground": "pnpm --filter playground run dev",
     "check": "run-s typecheck pkg:build test",
     "dev": "run-p pkg:watch",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "docs:dev": "vocs dev",
+    "docs:build": "vocs build",
+    "docs:preview": "vocs preview"
   },
   "browserslist": "extends @sanity/browserslist-config",
   "dependencies": {
@@ -55,10 +58,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
-    "@sanity/pkg-utils": "^6.12.0",
+    "@sanity/pkg-utils": "^6.12.2",
+    "@sanity/prettier-config": "^1.0.3",
+    "@sanity/ui": "^2.10.12",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
-    "@sanity/prettier-config": "^1.0.3",
     "@typescript-eslint/parser": "^8.18.1",
     "@vitest/coverage-v8": "^2.1.8",
     "@vitest/ui": "^2.1.8",
@@ -67,14 +71,18 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.1.4",
+    "hono": "^4.6.14",
     "npm-run-all2": "^7.0.2",
     "prettier": "^3.4.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.1",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "vocs": "1.0.0-alpha.62",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@9.15.1",
   "engines": {
     "node": ">=18"
   }

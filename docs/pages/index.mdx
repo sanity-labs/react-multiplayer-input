@@ -1,0 +1,40 @@
+---
+layout: landing
+---
+
+import {Stack, Text,Heading} from '@sanity/ui'
+import {Demo} from '../components/Demo'
+import {HomePage} from 'vocs/components'
+import {Root} from '../components/Root'
+
+<Root>
+<HomePage.Root>
+  <HomePage.Logo/>
+  <HomePage.Tagline>Drop-in replacement for native `input` or `textarea` that
+    supports
+    cursor and scroll
+    preservation for controlled inputs in a multiplayer/collaborative editing scenario.</HomePage.Tagline>
+  <HomePage.InstallPackage name="react-multiplayer-input" type="install"/>
+
+  <HomePage.Description>
+  <Stack space={4}>
+    <Demo/>
+
+    <Heading align="left" as="h3">The problem with native text inputs</Heading>
+    <Text align="left">
+    When a controlled text input is re-rendered with a `props.value` that differs from the current input value, the
+    caret jumps to the end of the input. This behavior results in a poor user experience, especially in scenarios where
+    multiple users are editing simultaneously.
+    This library addresses the issue by offering `MultiplayerInput` and `MultiplayerTextArea` components. These are
+    drop-in replacements for standard input and textarea elements, designed to preserve the caret position even when
+    `props.value` is updated.
+    </Text>
+
+  </Stack>
+  </HomePage.Description>
+  <HomePage.Buttons>
+    <HomePage.Button href="/getting-started" variant="accent">Get started</HomePage.Button>
+    <HomePage.Button href="https://github.com/sanity-io/react-multiplayer-input">GitHub</HomePage.Button>
+  </HomePage.Buttons>
+</HomePage.Root>
+</Root>

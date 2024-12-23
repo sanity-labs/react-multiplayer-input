@@ -3,7 +3,7 @@ import {type ComponentProps, type ComponentType, createRef, PureComponent} from 
 import {MAX_BITS} from './diff-match-patch/patch/constants'
 import {captureCursor, type Cursor, restoreCursor} from './utils/cursor'
 
-type Props = ComponentProps<'input'> & {as: ComponentType}
+type Props = ComponentProps<'input'> & {as?: ComponentType}
 type State = never
 
 export type UpdateSnapshot = {
