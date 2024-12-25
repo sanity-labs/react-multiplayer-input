@@ -8,8 +8,10 @@ export interface Cursor {
   startSuffix: string
   startOffset: number
   collapsed: boolean
+  direction: 'forward' | 'backward' | 'none'
   endPrefix?: string
   endSuffix?: string
+
   endOffset?: number
   scrollTop?: number
   scrollLeft?: number
@@ -17,13 +19,19 @@ export interface Cursor {
 
 export function captureCursor(
   element: HTMLTextAreaElement | HTMLInputElement,
-  options: {padLength: number},
+  options: {padLength: number; anchor: number},
 ) {
-  const {padLength} = options
+  const {padLength, anchor} = options
   const text = element.value
 
   const selectionStart = element.selectionStart
   const selectionEnd = element.selectionEnd
+  const direction =
+    element.selectionStart === element.selectionEnd
+      ? 'none'
+      : element.selectionStart === anchor
+        ? 'forward'
+        : 'backward'
 
   if (selectionStart === null || selectionEnd === null) {
     return
@@ -33,7 +41,8 @@ export function captureCursor(
     startPrefix: text.substring(selectionStart - padLength, selectionStart),
     startSuffix: text.substring(selectionStart, selectionStart + padLength),
     startOffset: selectionStart,
-    collapsed: selectionStart == selectionEnd,
+    collapsed: selectionStart === selectionEnd,
+    direction: direction,
   }
   if (!cursor.collapsed) {
     cursor.endPrefix = text.substring(selectionEnd - padLength, selectionEnd)
@@ -108,10 +117,7 @@ export function restoreCursor(
     // End not known, collapse to start.
     cursorEndPoint = cursorStartPoint
   }
-
-  // Restore selection.
-  element.selectionStart = cursorStartPoint
-  element.selectionEnd = cursorEndPoint
+  element.setSelectionRange(cursorStartPoint, cursorEndPoint, cursor.direction)
 
   // Restore scrollbar locations
   if ('scrollTop' in cursor) {

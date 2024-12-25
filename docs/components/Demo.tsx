@@ -26,7 +26,7 @@ export function Demo() {
     }
     function doTick() {
       setTick((currentTick) => currentTick + 1)
-      timerId = setTimeout(doTick, 10 + Math.random() * 150)
+      timerId = setTimeout(doTick, 10 + Math.random() * 450)
     }
   }, [])
 
@@ -35,10 +35,11 @@ export function Demo() {
   const endIndex = tick % FIRST_PARAGRAPH.length
   const dir = Math.floor(tick / FIRST_PARAGRAPH.length) % 2
 
-  const inputValue =
-    FIRST_PARAGRAPH.substring(0, dir === 1 ? FIRST_PARAGRAPH.length - endIndex : endIndex) +
-    '\n' +
-    rest.join('\n')
+  const liveTxt = FIRST_PARAGRAPH.substring(
+    0,
+    dir === 1 ? FIRST_PARAGRAPH.length - endIndex : endIndex,
+  )
+  const inputValue = liveTxt + '\n' + rest.join('\n') + '\n' + liveTxt
 
   const [native, setNative] = useState<boolean>(false)
 
@@ -47,7 +48,7 @@ export function Demo() {
     <Stack space={3}>
       <Flex gap={2} align="center">
         <Box flex={1}>
-          <Text align="left">Play around with caret or make a selection below</Text>
+          <Text align="left">Play around with caret or make a selection below *</Text>
         </Box>
         <Text>Switch to</Text>
         {native ? (
