@@ -1,7 +1,7 @@
 import {Box, Button, Flex, Stack, Text, TextArea} from '@sanity/ui'
 import {useEffect, useState} from 'react'
 
-import {MultiplayerTextArea} from '../../src/MultiplayerTextArea'
+import {createMultiplayerInput} from '../../src/createMultiplayerInput'
 
 const FIRST_PARAGRAPH =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer non sollicitudin lectus. Sed molestie, est quis eleifend vestibulum, nibh erat tincidunt quam, a efficitur purus diam at nisi. Donec congue pharetra justo ornare efficitur. Donec bibendum dui nec ex posuere interdum. Vestibulum scelerisque leo sapien, quis convallis libero vestibulum eget. Mauris in sodales leo. Quisque semper posuere egestas.'
@@ -13,6 +13,8 @@ Duis eu tellus eleifend, elementum risus a, maximus metus. Duis mattis dignissim
 Sed aliquam, felis ut molestie gravida, eros risus porttitor magna, sed accumsan dui libero eu nulla. Mauris porttitor sodales purus, et tempor urna interdum at. Nunc lacinia orci ac erat ornare ornare. Fusce elit lectus, blandit sed viverra ac, tincidunt quis sem. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vestibulum vel odio odio. Duis iaculis ac est eu feugiat. Aenean nisl leo, fringilla et ornare et, pharetra id orci. Morbi et magna viverra diam aliquam mollis nec et metus. Vestibulum eget euismod ante. Maecenas non lectus vel turpis posuere sagittis. Morbi eu odio quis nulla sollicitudin porta. Nunc et quam tristique, iaculis sem in, eleifend odio.
 
 Fusce ac congue est. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec sit amet auctor metus. Integer vitae diam augue. Pellentesque pellentesque justo orci, sed aliquet sapien imperdiet ut. Integer pellentesque finibus quam sit amet egestas. Quisque porttitor commodo lobortis. Suspendisse vel mauris ac felis accumsan varius. Ut nulla felis, malesuada a porttitor non, lacinia eget nunc. Etiam pretium suscipit bibendum. Ut consectetur nibh in orci efficitur, a facilisis neque tincidunt.`
+
+const MultiplayerTextArea = createMultiplayerInput(TextArea)
 
 export function Demo() {
   const [value, setValue] = useState(PARAGRAPHS)
@@ -68,7 +70,6 @@ export function Demo() {
         )}
       </Flex>
       <Component
-        as={TextArea}
         style={{width: '100%', padding: 3}}
         rows={10}
         value={inputValue}
