@@ -1,12 +1,15 @@
+import {useSyncExternalStore} from 'react'
 import {fromEvent, map, merge, share, Subject, tap} from 'rxjs'
 
 export type BroadcastStore<T> = {
   subscribe: (callback: () => void) => () => void
-  getSnapshot: () => T | undefined
+  getSnapshot: () => T
   setValue: (nextValue: T) => void
 }
 
-export function createBroadcastStore<T>(name: string, initialValue?: T): BroadcastStore<T> {
+export function createBroadcastStore<T>(name: string, initialValue: T): BroadcastStore<T>
+export function createBroadcastStore<T>(name: string): BroadcastStore<T | undefined>
+export function createBroadcastStore<T>(name: string, initialValue?: T) {
   let snapshot = initialValue
   const channel = new BroadcastChannel(name)
 
@@ -38,4 +41,8 @@ export function createBroadcastStore<T>(name: string, initialValue?: T): Broadca
     getSnapshot: () => snapshot,
     setValue,
   }
+}
+
+export function useBroadcastValue<T>(store: BroadcastStore<T>): [T, (nextValue: T) => void] {
+  return [useSyncExternalStore(store.subscribe, store.getSnapshot), store.setValue]
 }

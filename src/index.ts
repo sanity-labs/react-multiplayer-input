@@ -1,3 +1,2 @@
-import {createMultiplayerInput} from './createMultiplayerInput'
-
-export const MultiplayerInput = createMultiplayerInput('input')
+export {MultiplayerInput} from './MultiplayerInput'
+export {MultiplayerTextArea} from './MultiplayerTextArea'

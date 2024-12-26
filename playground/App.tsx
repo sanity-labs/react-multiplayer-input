@@ -1,16 +1,11 @@
-import {Card, Heading, Stack, TextArea, TextInput} from '@sanity/ui'
-import {useSyncExternalStore} from 'react'
-import {MultiplayerInput, MultiplayerTextarea} from 'react-multiplayer-input'
+import {Card, Heading, Stack} from '@sanity/ui'
+import {MultiplayerInput, MultiplayerTextArea} from 'react-multiplayer-input'
 
-import {type BroadcastStore, createBroadcastStore} from './createBroadcastStore'
+import {createBroadcastStore, useBroadcastValue} from './createBroadcastStore'
 
 const INITIAL = `
 foo bar --><-- baz
 `
-
-function useBroadcastValue<T>(store: BroadcastStore<T>): [T | undefined, (nextValue: T) => void] {
-  return [useSyncExternalStore(store.subscribe, store.getSnapshot), store.setValue]
-}
 
 const textInputStore = createBroadcastStore('textinput', INITIAL)
 const textareaStore = createBroadcastStore('textarea', INITIAL)
@@ -23,13 +18,12 @@ function App() {
       <Stack space={4}>
         <Heading>Text input</Heading>
         <MultiplayerInput
-          as={TextInput}
+          type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.currentTarget.value)}
         />
         <Heading>Textarea</Heading>
-        <MultiplayerTextarea
-          as={TextArea}
+        <MultiplayerTextArea
           value={textareaValue}
           rows={10}
           onChange={(e) => setTextareaValue(e.currentTarget.value)}
