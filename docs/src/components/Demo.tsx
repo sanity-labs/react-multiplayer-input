@@ -1,7 +1,7 @@
 import {Box, Flex, Heading, Stack, TextArea} from '@sanity/ui'
 import {useEffect, useState} from 'react'
 
-import {createMultiplayerInput} from '../../src/createMultiplayerInput'
+import {createMultiplayerInput} from '../../../src/createMultiplayerInput'
 
 export const MultiplayerTextArea = createMultiplayerInput(TextArea)
 
@@ -14,7 +14,6 @@ Programmatically changing the value of an input or a textarea makes the text cur
 This cursor jumping behavior results in a poor user experience, effectively making textareas and text inputs unusable for collaborative editing.
 
 This library aims to solve the problem by applying the cursor preservation technique outlined by Neil Fraser in his 2009 article found here: https://neil.fraser.name/writing/cursor/
-
 `
 
 export function Demo() {

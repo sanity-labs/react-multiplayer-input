@@ -3,10 +3,10 @@ import {Box, Button, Card, Flex, Heading, Stack, Text} from '@sanity/ui'
 import React from 'react'
 
 import {useColorScheme} from '../ColorSchemeProvider'
+import {Demo} from '../components/Demo'
 import {InstallInstructions} from '../components/InstallInstructions'
-import {Demo} from '../Demo'
 
-export function Home(props: {}) {
+export function Home() {
   const [scheme, setScheme] = useColorScheme()
 
   return (
@@ -46,10 +46,13 @@ export function Home(props: {}) {
               </Text>
             </Stack>
             <Stack space={4} paddingTop={5}>
-              <Heading size={2}>See the difference</Heading>
+              <Heading size={2}>Why a special multiplayer input?</Heading>
               <Text size={2} muted>
-                Try interacting with the textareas below to see the difference in text cursor and
-                selection behavior in a simulated collaborative editing session.
+                Programmatically changing the value of a text input or textarea makes the text
+                cursor jump to the end of the input. Below is a side-by-side comparison of a
+                collaborative textarea built with this library and a native textarea. Try interact
+                with both to get a clear demonstration of the difference in text cursor and
+                selection behavior in a simulated collaborative editing scenario.
               </Text>
               <Box paddingY={3}>
                 <Demo />
