@@ -4,6 +4,7 @@ import React from 'react'
 
 import {useColorScheme} from '../ColorSchemeProvider'
 import {Demo} from '../components/Demo'
+import {MdiGithub} from '../components/GithubIcon'
 import {InstallInstructions} from '../components/InstallInstructions'
 
 export function Home() {
@@ -12,21 +13,34 @@ export function Home() {
   return (
     <Card height="fill">
       <Stack space={3}>
-        <Card padding={4}>
+        <Card paddingX={5} paddingY={3} borderBottom>
           <nav>
-            <Flex>
-              <Box flex={1}>
+            <Flex align="center">
+              <Flex gap={5} flex={1} align="center">
                 <Text size={[1, 2, 3]} weight="semibold">
                   <a href="/">React Multiplayer Input</a>
                 </Text>
-              </Box>
-              <Box>
+                <Text>
+                  <a href="/">Docs</a>
+                </Text>
+              </Flex>
+
+              <Flex gap={3} align="center">
                 {scheme === 'dark' ? (
                   <Button icon={SunIcon} mode="bleed" onClick={() => setScheme('light')} />
                 ) : (
                   <Button icon={MoonIcon} mode="bleed" onClick={() => setScheme('dark')} />
                 )}
-              </Box>
+                <Button
+                  as="a"
+                  href="https://github.com/sanity-io/react-multiplayer-input"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  mode="bleed"
+                  fontSize={3}
+                  icon={MdiGithub}
+                />
+              </Flex>
             </Flex>
           </nav>
         </Card>
@@ -48,11 +62,12 @@ export function Home() {
             <Stack space={4} paddingTop={5}>
               <Heading size={2}>Why a special multiplayer input?</Heading>
               <Text size={2} muted>
-                Programmatically changing the value of a text input or textarea makes the text
-                cursor jump to the end of the input. Below is a side-by-side comparison of a
-                collaborative textarea built with this library and a native textarea. Try interact
-                with both to get a clear demonstration of the difference in text cursor and
-                selection behavior in a simulated collaborative editing scenario.
+                As per native browser behavior, programmatically changing the value of a text input
+                or textarea makes the text cursor jump to the end of the input. Below is a
+                side-by-side comparison of a collaborative textarea built with this library and a
+                native textarea. Try interact with both to get a clear demonstration of the
+                difference in text cursor and selection behavior in a simulated collaborative
+                editing scenario.
               </Text>
               <Box paddingY={3}>
                 <Demo />

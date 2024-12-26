@@ -17,22 +17,18 @@ export function InstallInstructions(props: {pgkName: string}) {
     <Stack space={2}>
       {PACKAGES.map((pkg) => {
         const command = pkg.command(props.pgkName)
-        const [cli, ...rest] = command.split(' ')
+
         return (
-          <>
-            <Card border tone="suggest" padding={2} radius={2}>
-              <Flex align="center">
-                <Box flex={1}>
-                  <Text>
-                    <code>
-                      <b>{cli}</b> {rest.join(' ')}
-                    </code>
-                  </Text>
-                </Box>
-                <Button icon={CopyIcon} mode="bleed" onClick={() => copyToClipboard(command)} />
-              </Flex>
-            </Card>
-          </>
+          <Card key={pkg.name} border tone="suggest" padding={2} radius={2}>
+            <Flex align="center">
+              <Box flex={1}>
+                <Text>
+                  <code>{command}</code>
+                </Text>
+              </Box>
+              <Button icon={CopyIcon} mode="bleed" onClick={() => copyToClipboard(command)} />
+            </Flex>
+          </Card>
         )
       })}
     </Stack>

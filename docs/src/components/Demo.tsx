@@ -5,7 +5,7 @@ import {createMultiplayerInput} from '../../../src/createMultiplayerInput'
 
 export const MultiplayerTextArea = createMultiplayerInput(TextArea)
 
-const SAMPLE_TEXT = `This is an example of a programmatic modification of the textarea value. You can make your own edits below this line.         `
+const SAMPLE_TEXT = `This is an example of a programmatic modification of the textarea value. You can make your own edits below this paragraph.         `
 
 const PARAGRAPHS = `
 
@@ -28,7 +28,7 @@ export function Demo() {
     }
     function doTick() {
       setTick((currentTick) => currentTick + 1)
-      timerId = setTimeout(doTick, 10 + Math.random() * 100)
+      timerId = setTimeout(doTick, 10 + Math.random() * 200)
     }
   }, [])
 
