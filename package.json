@@ -36,19 +36,16 @@
     "pkg:build": "pkg build --strict --check --clean",
     "pkg:watch": "pkg watch --strict",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false -p tsconfig.dist.json",
-    "typecheck:playground": "tsc --project playground/tsconfig.json",
+    "typecheck:docs": "tsc --project docs/tsconfig.json",
     "lint": "eslint .",
     "test": "vitest run --typecheck",
     "test:watch": "vitest --typecheck",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
-    "playground": "pnpm --filter playground run dev",
+    "docs": "pnpm --filter docs run dev",
     "check": "run-s typecheck pkg:build test",
     "dev": "run-p pkg:watch",
-    "prepublishOnly": "npm run build",
-    "docs:dev": "vocs dev",
-    "docs:build": "vocs build",
-    "docs:preview": "vocs preview"
+    "prepublishOnly": "npm run build"
   },
   "browserslist": "extends @sanity/browserslist-config",
   "dependencies": {
@@ -78,7 +75,6 @@
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.1",
     "vitest": "^2.1.8",
-    "vocs": "1.0.0-alpha.62",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
