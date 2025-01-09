@@ -1,4 +1,10 @@
-import {type ComponentProps, type ComponentType, createRef, PureComponent} from 'react'
+import {
+  type ComponentProps,
+  type ComponentType,
+  type MutableRefObject,
+  PureComponent,
+  type RefObject,
+} from 'react'
 
 import {MAX_BITS} from './diff-match-patch/patch/constants'
 import {captureCursor, type Cursor, restoreCursor} from './utils/cursor'
@@ -25,27 +31,35 @@ type ReturnedComponentProps<C extends 'textarea' | 'input' | ComponentType> = C 
 
 export function createMultiplayerInput<
   WrappedComponent extends 'textarea' | 'input' | ComponentType,
->(Component: WrappedComponent): ComponentType<ReturnedComponentProps<WrappedComponent> & {}> {
-  type Props = ReturnedComponentProps<WrappedComponent>
+>(
+  Component: WrappedComponent,
+): ComponentType<
+  ReturnedComponentProps<WrappedComponent> & {
+    elementRef?: RefObject<ValidElementType | null>
+  }
+> {
+  type Props = ReturnedComponentProps<WrappedComponent> & {
+    elementRef?: RefObject<ValidElementType | null>
+  }
 
   return class MultiplayerInput extends PureComponent<Props, State> {
-    #inputRef = createRef<ValidElementType>()
+    #inputRef: ValidElementType | null = null
     #selectionAnchor: number | null = null
 
     componentDidMount() {
       document.addEventListener('mouseup', this.#handleMouseUp)
-      this.#inputRef.current?.addEventListener('mousedown', this.#handleMouseDown)
-      this.#inputRef.current!.selectionStart = this.#inputRef.current!.selectionStart! + 1
-      this.#inputRef.current!.selectionStart = this.#inputRef.current!.selectionStart! - 1
+      this.#inputRef?.addEventListener('mousedown', this.#handleMouseDown)
+      this.#inputRef!.selectionStart = this.#inputRef!.selectionStart! + 1
+      this.#inputRef!.selectionStart = this.#inputRef!.selectionStart! - 1
     }
 
     #handleMouseDown = () => {
-      this.#inputRef.current?.addEventListener('selectionchange', this.#sampleSelectionOnce)
+      this.#inputRef?.addEventListener('selectionchange', this.#sampleSelectionOnce)
     }
 
     #sampleSelectionOnce = () => {
-      this.#selectionAnchor = this.#inputRef.current!.selectionStart
-      this.#inputRef.current?.removeEventListener('selectionchange', this.#sampleSelectionOnce)
+      this.#selectionAnchor = this.#inputRef!.selectionStart
+      this.#inputRef?.removeEventListener('selectionchange', this.#sampleSelectionOnce)
     }
 
     #handleMouseUp = () => {
@@ -54,17 +68,17 @@ export function createMultiplayerInput<
 
     componentWillUnmount() {
       document.removeEventListener('mouseup', this.#handleMouseUp)
-      this.#inputRef.current?.removeEventListener('mousedown', this.#handleMouseDown)
-      this.#inputRef.current?.removeEventListener('selectionchange', this.#sampleSelectionOnce)
+      this.#inputRef?.removeEventListener('mousedown', this.#handleMouseDown)
+      this.#inputRef?.removeEventListener('selectionchange', this.#sampleSelectionOnce)
     }
 
     getSnapshotBeforeUpdate(prevProps: Props): UpdateSnapshot | null {
       const {value: prevValue} = prevProps
       const {value: nextValue} = this.props
-      if (prevValue === nextValue || !this.#inputRef.current) {
+      if (prevValue === nextValue || !this.#inputRef) {
         return null
       }
-      const cursor = captureCursor(this.#inputRef.current, {
+      const cursor = captureCursor(this.#inputRef, {
         padLength,
         anchor: this.#selectionAnchor!,
       })
@@ -72,8 +86,8 @@ export function createMultiplayerInput<
     }
 
     componentDidUpdate(prevProps: Props, prevState: State, snapshot: UpdateSnapshot | undefined) {
-      if (snapshot?.cursor && this.#inputRef.current) {
-        restoreCursor(this.#inputRef.current, snapshot.cursor, {
+      if (snapshot?.cursor && this.#inputRef) {
+        restoreCursor(this.#inputRef, snapshot.cursor, {
           padLength,
           matchDistance: 1000,
           matchThreshold: 0.8,
@@ -81,13 +95,20 @@ export function createMultiplayerInput<
         // adjust selection anchor
         this.#selectionAnchor =
           snapshot.cursor.direction === 'none' || snapshot.cursor.direction === 'forward'
-            ? this.#inputRef.current!.selectionStart
-            : this.#inputRef.current!.selectionEnd
+            ? this.#inputRef!.selectionStart
+            : this.#inputRef!.selectionEnd
       }
     }
 
+    setRef = (element: ValidElementType | null) => {
+      if (this.props.elementRef) {
+        ;(this.props.elementRef as MutableRefObject<ValidElementType | null>).current = element
+      }
+      this.#inputRef = element
+    }
+
     render() {
-      return <Component {...(this.props as any)} ref={this.#inputRef} />
+      return <Component {...(this.props as any)} ref={this.setRef} />
     }
   }
 }

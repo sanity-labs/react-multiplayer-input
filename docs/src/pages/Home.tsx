@@ -1,4 +1,4 @@
-import {LaunchIcon, MoonIcon, SunIcon} from '@sanity/icons'
+import {ArrowRightIcon, LaunchIcon, MoonIcon, SunIcon} from '@sanity/icons'
 import {Box, Button, Card, Flex, Heading, Stack, Text} from '@sanity/ui'
 import React from 'react'
 
@@ -13,65 +13,65 @@ export function Home() {
   return (
     <Card height="fill">
       <Stack space={3}>
-        <Card paddingX={5} paddingY={3} borderBottom>
-          <nav>
-            <Flex align="center">
-              <Flex gap={5} flex={1} align="center">
-                <Text size={[1, 2, 3]} weight="semibold">
-                  <a href="/">React Multiplayer Input</a>
-                </Text>
-                <Text>
-                  <a href="/">Docs</a>
-                </Text>
-              </Flex>
-
-              <Flex gap={3} align="center">
-                {scheme === 'dark' ? (
-                  <Button icon={SunIcon} mode="bleed" onClick={() => setScheme('light')} />
-                ) : (
-                  <Button icon={MoonIcon} mode="bleed" onClick={() => setScheme('dark')} />
-                )}
-                <Button
-                  as="a"
-                  href="https://github.com/sanity-io/react-multiplayer-input"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  mode="bleed"
-                  fontSize={3}
-                  icon={MdiGithub}
-                />
-              </Flex>
+        <Card as="nav" tone="primary" paddingX={5} paddingY={3} borderBottom>
+          <Flex align="center">
+            <Flex gap={5} flex={1} align="center">
+              <Text size={[1, 2, 3]} weight="semibold">
+                <a href="/">React Multiplayer Input</a>
+              </Text>
+              <Text>
+                <a href="/">Docs</a>
+              </Text>
             </Flex>
-          </nav>
+
+            <Flex gap={3}>
+              {scheme === 'dark' ? (
+                <Button icon={SunIcon} mode="bleed" onClick={() => setScheme('light')} />
+              ) : (
+                <Button icon={MoonIcon} mode="bleed" onClick={() => setScheme('dark')} />
+              )}
+              <Button
+                as="a"
+                href="https://github.com/sanity-io/react-multiplayer-input"
+                target="_blank"
+                rel="noopener noreferrer"
+                mode="bleed"
+                fontSize={3}
+                icon={MdiGithub}
+              />
+            </Flex>
+          </Flex>
         </Card>
 
-        <Flex align="center" justify="center" padding={3} margin={4}>
-          <Stack space={6} style={{maxWidth: '60%'}}>
+        <Flex justify="center" padding={3} margin={4}>
+          <Stack space={6}>
             <Stack space={5}>
-              <Box marginTop={[3, 5, 7]}>
-                <Heading as="h1" size={[2, 3, 5]} align="center" muted>
+              <Box marginTop={[3, 5, 6]} marginBottom={4}>
+                <Heading as="h1" size={[2, 3, 5]}>
                   React Multiplayer Input
                 </Heading>
               </Box>
-              <Text align="center" size={3}>
+              <Text size={3}>
                 Drop-in replacement for native <code>&lt;input&gt;</code> and{' '}
-                <code>&lt;textarea&gt;</code> that preserves cursor, selection, and scroll position
-                during collaborative editing
+                <code>&lt;textarea&gt;</code> that preserves <b>cursor</b>, <b>selection</b>, and{' '}
+                <b>scroll position</b> during collaborative editing
               </Text>
             </Stack>
-            <Stack space={4} paddingTop={5}>
-              <Heading size={2}>Why a special multiplayer input?</Heading>
-              <Text size={2} muted>
-                As per native browser behavior, programmatically changing the value of a text input
-                or textarea makes the text cursor jump to the end of the input. Below is a
-                side-by-side comparison of a collaborative textarea built with this library and a
-                native textarea. Try interact with both to get a clear demonstration of the
-                difference in text cursor and selection behavior in a simulated collaborative
-                editing scenario.
-              </Text>
-              <Box paddingY={3}>
-                <Demo />
-              </Box>
+            <Stack space={4} paddingTop={3}>
+              <Flex>
+                <Button
+                  fontSize={4}
+                  tone="suggest"
+                  radius={6}
+                  paddingX={5}
+                  paddingY={4}
+                  iconRight={<ArrowRightIcon />}
+                  text="Get started"
+                />
+              </Flex>
+            </Stack>
+            <Stack space={4} paddingTop={3}>
+              <Demo />
             </Stack>
             <Stack space={3} marginTop={2}>
               <InstallInstructions pgkName="react-multiplayer-input" />

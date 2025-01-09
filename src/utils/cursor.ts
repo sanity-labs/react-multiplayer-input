@@ -26,27 +26,27 @@ export function captureCursor(
 
   const selectionStart = element.selectionStart
   const selectionEnd = element.selectionEnd
-  const direction =
-    element.selectionStart === element.selectionEnd
+  const direction = element.selectionStart
+    ? element.selectionStart === element.selectionEnd
       ? 'none'
       : element.selectionStart === anchor
         ? 'forward'
         : 'backward'
+    : 'none'
 
   if (selectionStart === null || selectionEnd === null) {
     return
   }
-
   const cursor: Cursor = {
-    startPrefix: text.substring(selectionStart - padLength, selectionStart),
-    startSuffix: text.substring(selectionStart, selectionStart + padLength),
+    startPrefix: text.substring(selectionStart - padLength, selectionStart) || '',
+    startSuffix: text.substring(selectionStart, selectionStart + padLength) || '',
     startOffset: selectionStart,
     collapsed: selectionStart === selectionEnd,
     direction: direction,
   }
   if (!cursor.collapsed) {
-    cursor.endPrefix = text.substring(selectionEnd - padLength, selectionEnd)
-    cursor.endSuffix = text.substring(selectionEnd, selectionEnd + padLength)
+    cursor.endPrefix = text.substring(selectionEnd - padLength, selectionEnd) || ''
+    cursor.endSuffix = text.substring(selectionEnd, selectionEnd + padLength) || ''
     cursor.endOffset = selectionEnd
   }
 
@@ -117,6 +117,7 @@ export function restoreCursor(
     // End not known, collapse to start.
     cursorEndPoint = cursorStartPoint
   }
+
   element.setSelectionRange(cursorStartPoint, cursorEndPoint, cursor.direction)
 
   // Restore scrollbar locations
