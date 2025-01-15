@@ -8,6 +8,7 @@ export default defineConfig({
       'ae-internal-missing-underscore': 'off',
     },
   },
+  external: ['react'],
   // the path to the tsconfig file for distributed builds
   tsconfig: 'tsconfig.dist.json',
 })
