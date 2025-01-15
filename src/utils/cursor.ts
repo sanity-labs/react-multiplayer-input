@@ -1,7 +1,7 @@
 // based on mobwrite implementation of cursor restoration found at
 // https://code.google.com/archive/p/google-mobwrite/
 // See https://neil.fraser.name/writing/cursor/ for an in-depth explanation of how it works
-import {makeDiff, match, xIndex} from '../diff-match-patch'
+import {makeDiff, match, xIndex} from '@sanity/diff-match-patch'
 
 export interface Cursor {
   startPrefix: string

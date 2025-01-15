@@ -6,7 +6,6 @@ import {
   type RefObject,
 } from 'react'
 
-import {MAX_BITS} from './diff-match-patch/patch/constants'
 import {captureCursor, type Cursor, restoreCursor} from './utils/cursor'
 
 type State = never
@@ -16,7 +15,9 @@ export type UpdateSnapshot = {
   cursor: Cursor
 }
 
-const padLength = MAX_BITS / 2
+// MAX_BITS / 2
+// see https://github.com/sanity-io/diff-match-patch/blob/main/src/patch/constants.ts#L2
+const padLength = 16
 
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setSelectionRange#exceptions
 type InputProps<C extends 'input'> = Omit<ComponentProps<C>, 'type'> & {
