@@ -1,14 +1,14 @@
 import {PauseIcon, PlayIcon, RefreshIcon, StopIcon} from '@sanity/icons'
 import {Button, Card, Flex, Stack, Text, TextArea} from '@sanity/ui'
-import {useCallback, useRef} from 'react'
+import {useEffect, useRef} from 'react'
 
 import {createMultiplayerInput} from '../../../src/createMultiplayerInput'
 import {createBroadcastStore, useBroadcastValue} from '../createBroadcastStore'
-import {useTyper} from './useTyper'
+import {startTyping} from '../textTyper'
 
 export const MultiplayerTextArea = createMultiplayerInput(TextArea)
 
-const SAMPLE_TEXT = `Programmatically changing the value of a text input or a textsrea\b\b\b\barea makes the text cursor jump to the end. This results in a poor user experience, effectively rendering textareas and text inputs unsuitable for collaborative editing.
+const SAMPLE_TEXT = `Programmatically changing the value of a text input or a textsrea\b\b\b\barea makes the text cursor jump to the end. This results in a poor user experience, effectively making textareas and text inputs unsuitable for collaborative editing.
 
 This library aims to solve this problem by applying the cursor preservation technique described by Neil Fraser in his 2009 article (link below *).
 
@@ -31,7 +31,7 @@ Pellentesque a eros sollicitudin, pretium nibh sit amet, vehicula urna. Sed et t
 const store = createBroadcastStore<string | undefined>(SAMPLE_TEXT)
 export function Demo() {
   const [value, setValue] = useBroadcastValue<string | undefined>(store)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
 
   return (
     <>
@@ -46,7 +46,7 @@ export function Demo() {
           <Stack flex={1} space={3}>
             <MultiplayerTextArea
               style={{padding: 20}}
-              elementRef={inputRef}
+              ref={inputRef}
               rows={22}
               value={value || ''}
               onChange={(event) => setValue(event.currentTarget.value)}
@@ -73,20 +73,26 @@ export function Demo() {
 }
 
 function Mirror() {
-  const inputRef = useRef<HTMLTextAreaElement>(null)
   const [value, setValue] = useBroadcastValue<string | undefined>(store)
 
-  const typeDelay = useCallback(
-    (char: string) => (char === '\b' ? 10 : char == '\n' ? 500 : 10 + Math.random() * 50),
-    [],
-  )
-  useTyper(inputRef, SAMPLE_TEXT, typeDelay)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
+  useEffect(() => {
+    if (inputRef.current) {
+      return startTyping(
+        inputRef.current,
+        SAMPLE_TEXT,
+        () => Math.random() * 20 + Math.random() * 100,
+        () => {},
+      )
+    }
+    return undefined
+  }, [inputRef])
 
   return (
     <MultiplayerTextArea
       style={{display: 'none'}}
       value={value || ''}
-      elementRef={inputRef}
+      ref={inputRef}
       onChange={(event) => setValue(event.currentTarget.value)}
     />
   )

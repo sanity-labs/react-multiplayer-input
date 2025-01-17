@@ -1,18 +1,7 @@
-import {type RefObject, useEffect} from 'react'
-
-export function useTyper(
-  elementRef: RefObject<HTMLInputElement | HTMLTextAreaElement>,
-  text: string,
-  delay: (char: string) => number,
-) {
-  useEffect(() => {
-    if (elementRef.current) {
-      startTyping(elementRef.current, text, delay)
-    }
-  }, [elementRef, text, delay])
-}
-
-const triggerInputEvent = (input: HTMLInputElement | HTMLTextAreaElement, nextValue: string) => {
+const triggerInputEvent = (
+  input: HTMLInputElement | HTMLTextAreaElement,
+  nextValue: string,
+) => {
   const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
     input.constructor.prototype,
     'value',
@@ -23,14 +12,12 @@ const triggerInputEvent = (input: HTMLInputElement | HTMLTextAreaElement, nextVa
 function splitIndex(str: string, index: number): [string, string] {
   return [str.substring(0, index), str.substring(index + 1)]
 }
-function startTyping(
+export function startTyping(
   input: HTMLInputElement | HTMLTextAreaElement,
   text: string,
   delay: (char: string) => number,
+  onEnd: () => void,
 ) {
-  input.select() // you can also use input.focus()
-  input.value = ''
-
   let current = 0
 
   let timerId = setTimeout(write, 0)
@@ -40,11 +27,14 @@ function startTyping(
     const [before, after] = splitIndex(input.value || '', cursor + 1)
     const char = text[current]
 
-    const nextVal = (char === '\b' ? before.slice(0, -1) : before + char) + (after || '')
+    const nextVal =
+      (char === '\b' ? before.slice(0, -1) : before + char) + (after || '')
     triggerInputEvent(input, nextVal)
     current++
     if (current < text.length) {
       timerId = setTimeout(write, delay(char!))
+    } else {
+      onEnd()
     }
   }
 

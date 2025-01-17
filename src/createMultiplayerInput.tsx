@@ -1,6 +1,8 @@
 import {
   type ComponentProps,
   type ComponentType,
+  type ForwardedRef,
+  forwardRef,
   type MutableRefObject,
   PureComponent,
   type RefObject,
@@ -32,18 +34,17 @@ type ReturnedComponentProps<C extends 'textarea' | 'input' | ComponentType> = C 
 
 export function createMultiplayerInput<
   WrappedComponent extends 'textarea' | 'input' | ComponentType,
->(
-  Component: WrappedComponent,
-): ComponentType<
-  ReturnedComponentProps<WrappedComponent> & {
-    elementRef?: RefObject<ValidElementType | null>
-  }
-> {
-  type Props = ReturnedComponentProps<WrappedComponent> & {
+>(Component: WrappedComponent): ComponentType<ReturnedComponentProps<WrappedComponent>> {
+  type InnerMultiplayerInputProps = ReturnedComponentProps<WrappedComponent> & {
     elementRef?: RefObject<ValidElementType | null>
   }
 
-  return class MultiplayerInput extends PureComponent<Props, State> {
+  /**
+   * Implements cursor preservation by taking a snapshot of the cursor position before update and restoring it after update
+   * Needs to be a class component as long as there are no getSnapshotBeforeUpdate equivalent for function components
+   * see https://react.dev/reference/react/Component#getsnapshotbeforeupdate
+   */
+  class InnerMultiplayerInput extends PureComponent<InnerMultiplayerInputProps, State> {
     #inputRef: ValidElementType | null = null
     #selectionAnchor: number | null = null
 
@@ -73,7 +74,7 @@ export function createMultiplayerInput<
       this.#inputRef?.removeEventListener('selectionchange', this.#sampleSelectionOnce)
     }
 
-    getSnapshotBeforeUpdate(prevProps: Props): UpdateSnapshot | null {
+    getSnapshotBeforeUpdate(prevProps: InnerMultiplayerInputProps): UpdateSnapshot | null {
       const {value: prevValue} = prevProps
       const {value: nextValue} = this.props
       if (prevValue === nextValue || !this.#inputRef) {
@@ -86,7 +87,11 @@ export function createMultiplayerInput<
       return cursor ? {cursor} : null
     }
 
-    componentDidUpdate(prevProps: Props, prevState: State, snapshot: UpdateSnapshot | undefined) {
+    componentDidUpdate(
+      prevProps: InnerMultiplayerInputProps,
+      prevState: State,
+      snapshot: UpdateSnapshot | undefined,
+    ) {
       if (snapshot?.cursor && this.#inputRef) {
         restoreCursor(this.#inputRef, snapshot.cursor, {
           padLength,
@@ -109,7 +114,13 @@ export function createMultiplayerInput<
     }
 
     render() {
-      return <Component {...(this.props as any)} ref={this.setRef} />
+      const {elementRef, ...rest} = this.props
+      return <Component {...(rest as any)} ref={this.setRef} />
     }
   }
+
+  // Wrap in forwardRef to be able to pass the element ref on to the class component
+  return forwardRef(function MultiplayerInput(props, ref: ForwardedRef<ValidElementType>) {
+    return <InnerMultiplayerInput {...(props as any)} elementRef={ref} />
+  }) as any
 }
