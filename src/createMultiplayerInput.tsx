@@ -23,17 +23,19 @@ const padLength = 16
 
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setSelectionRange#exceptions
 type InputProps<C extends 'input'> = Omit<ComponentProps<C>, 'type'> & {
-  type: 'text' | 'search' | 'tel' | 'url' | 'password'
+  type: 'text' | 'search' | 'tel' | 'url' | 'password' | 'email'
 }
 
 type ReturnedComponentProps<C extends 'textarea' | 'input' | ComponentType> = C extends 'input'
   ? InputProps<C>
-  : Omit<ComponentProps<C>, 'value'> & {
-      value: string
-    }
+  : C extends 'textarea'
+    ? ComponentProps<C>
+    : Omit<ComponentProps<C>, 'value'> & {
+        value: string
+      }
 
 export function createMultiplayerInput<
-  WrappedComponent extends 'textarea' | 'input' | ComponentType,
+  WrappedComponent extends 'textarea' | 'input' | ComponentType<any>,
 >(Component: WrappedComponent): ComponentType<ReturnedComponentProps<WrappedComponent>> {
   type InnerMultiplayerInputProps = ReturnedComponentProps<WrappedComponent> & {
     elementRef?: RefObject<ValidElementType | null>
