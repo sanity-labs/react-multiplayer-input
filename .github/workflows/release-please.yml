@@ -44,15 +44,15 @@ jobs:
           cache: pnpm
           node-version: lts/*
           registry-url: "https://registry.npmjs.org"
+      # npm 11.5.1+ required for OIDC trusted publishing
+      - name: Update npm for trusted publishing (OIDC)
+        if: ${{ steps.release.outputs.release_created || github.event.inputs.publish == 'true' }}
+        run: npm install -g npm@latest
       - run: pnpm install --ignore-scripts
         if: ${{ steps.release.outputs.release_created || github.event.inputs.publish == 'true' }}
-      - name: Set publishing config
-        run: pnpm config set '//registry.npmjs.org/:_authToken' "${NODE_AUTH_TOKEN}"
-        if: ${{ steps.release.outputs.release_created || github.event.inputs.publish == 'true' }}
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
       # Release Please has already incremented versions and published tags, so we just
-      # need to publish the new version to npm here
+      # need to publish the new version to npm here. Auth is via OIDC trusted
+      # publishing — no NPM token needed.
       - run: pnpm publish
         if: ${{ steps.release.outputs.release_created || github.event.inputs.publish == 'true' }}
         env:
