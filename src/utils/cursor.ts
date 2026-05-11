@@ -26,17 +26,13 @@ export function captureCursor(
 
   const selectionStart = element.selectionStart
   const selectionEnd = element.selectionEnd
-  const direction = element.selectionStart
-    ? element.selectionStart === element.selectionEnd
-      ? 'none'
-      : element.selectionStart === anchor
-        ? 'forward'
-        : 'backward'
-    : 'none'
 
   if (selectionStart === null || selectionEnd === null) {
     return
   }
+
+  const direction: Cursor['direction'] =
+    selectionStart === selectionEnd ? 'none' : selectionStart === anchor ? 'forward' : 'backward'
   const cursor: Cursor = {
     startPrefix: text.substring(selectionStart - padLength, selectionStart) || '',
     startSuffix: text.substring(selectionStart, selectionStart + padLength) || '',

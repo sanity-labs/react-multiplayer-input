@@ -3,3 +3,5 @@ node_modules
 tsconfig.vitest-temp.json
 coverage
 tsconfig.tsbuildinfo
+.vitest-attachments
+__screenshots__
