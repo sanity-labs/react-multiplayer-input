@@ -1,6 +1,6 @@
 {
   "name": "react-multiplayer-input",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Drop-in replacement for native <input> or <textarea> that supports cursor and scroll preservation in a multiplayer/collaborative editing scenario",
   "keywords": [],
   "repository": {
