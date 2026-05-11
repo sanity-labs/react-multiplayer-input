@@ -6,7 +6,7 @@
 
 When a text input's `value` is replaced wholesale — as happens when a remote peer's edit arrives in a CRDT or OT session — the browser snaps the caret to the end of the field and resets the scroll position. The user loses their place mid-keystroke, mid-selection, mid-scroll.
 
-This library wraps an input so that on every `value` change it captures a fingerprint of the text around the caret, lets React commit the update, then locates that fingerprint in the new text and restores the selection and scroll position. The technique is the one described in Neil Fraser's [Cursors in Collaborative Documents](https://neil.fraser.name/writing/cursor/) and originally implemented in Google MobWrite. Fuzzy matching is delegated to [`@sanity/diff-match-patch`](https://github.com/sanity-io/diff-match-patch).
+This library wraps an input so that when `value` changes, the DOM is patched via `setRangeText('preserve')` — an edit operation rather than a full replacement — before React's controlled-input commit runs. The browser preserves the caret, selection, and scroll position for free, per the W3C `'preserve'` selectMode contract. The character-level diff between the old and new value is computed with [`@sanity/diff-match-patch`](https://github.com/sanity-io/diff-match-patch).
 
 ## Install
 

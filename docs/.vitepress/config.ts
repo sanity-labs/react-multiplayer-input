@@ -5,7 +5,7 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
   title: 'React Multiplayer Input',
   description:
-    'Drop-in replacement for native <input> and <textarea> that preserves cursor, selection, and scroll during collaborative editing.',
+    'Drop-in replacement for native input and textarea elements that preserves caret, selection, and scroll during collaborative editing.',
   base: '/react-multiplayer-input/',
   cleanUrls: true,
   lastUpdated: true,
@@ -46,8 +46,7 @@ export default defineConfig({
       text: 'Edit this page on GitHub',
     },
     footer: {
-      message:
-        'Cursor preservation algorithm by Neil Fraser (Google MobWrite). Released under the MIT License.',
+      message: 'Released under the MIT License.',
       copyright: '© Sanity.io',
     },
     search: {provider: 'local'},
@@ -56,15 +55,6 @@ export default defineConfig({
     resolve: {
       alias: {
         'react-multiplayer-input': path.resolve(__dirname, '../../src'),
-      },
-    },
-    esbuild: {
-      target: 'es2022',
-      tsconfigRaw: {
-        compilerOptions: {
-          target: 'es2022',
-          useDefineForClassFields: true,
-        },
       },
     },
     ssr: {

@@ -1,12 +1,12 @@
 # react-multiplayer-input
 
-React drop-in for `<input>` and `<textarea>` that preserves cursor and scroll state during collaborative editing.
+React drop-in for `<input>` and `<textarea>` that preserves caret, selection, and scroll state during collaborative editing.
 
 ## The problem
 
-When a text input's `value` is replaced wholesale (as happens when a remote peer's edit arrives in a CRDT/OT session), the browser snaps the caret to the end of the field and resets the scroll position. The user loses their place mid-keystroke, mid-selection, mid-scroll.
+When a text input's `value` prop is replaced with a new string, the browser moves the caret to the end of the field and resets the scroll position. In a collaborative editing session, every remote peer's edit triggers this, so the user can't comfortably type while peers are also typing.
 
-This library wraps an input so that on every `value` change it captures a fingerprint of the text around the caret, lets React commit the update, then locates that fingerprint in the new text and restores the selection and scroll position. The technique is the one described in Neil Fraser's [Cursors in Collaborative Documents](https://neil.fraser.name/writing/cursor/) and originally implemented in Google MobWrite. Fuzzy matching is delegated to [`@sanity/diff-match-patch`](https://github.com/sanity-io/diff-match-patch).
+This library wraps an input so that on a `value` change, the DOM is patched via `setRangeText` (an edit, not a replacement) rather than a wholesale assignment. The browser keeps the caret, selection, and scroll position attached to the surrounding text.
 
 ## Install
 
@@ -49,7 +49,7 @@ Only text-like input types are accepted: `text`, `search`, `tel`, `url`, `passwo
 
 ### Wrapping a custom component
 
-If you already have a styled input or are using a component from a UI library, wrap it with `createMultiplayerInput`. The wrapped component must accept a `ref` that resolves to an `HTMLInputElement` or `HTMLTextAreaElement`, and must accept a `value: string` prop.
+If you already have a styled input or are using a component from a UI library, wrap it with `createMultiplayerInput`. The wrapped component must accept a `ref` that resolves to an `HTMLInputElement` or `HTMLTextAreaElement`, and must accept `defaultValue` and `onChange` props (the wrapper renders the underlying component as uncontrolled internally — see [How it works](#how-it-works)).
 
 ```tsx
 import {createMultiplayerInput} from 'react-multiplayer-input'
@@ -74,27 +74,46 @@ import {
 
 All three forward refs to the underlying DOM element.
 
+## How it works
+
+The wrapper passes `defaultValue` to the underlying input instead of `value`. React then never writes `element.value = X` during a commit, which is what would snap the caret. The consumer-facing API still takes `value` and `onChange`.
+
+A `useLayoutEffect` runs when the `value` prop changes:
+
+1. Diffs the current DOM value against the incoming prop ([`@sanity/diff-match-patch`](https://github.com/sanity-io/diff-match-patch)).
+2. Applies each diff op via [`element.setRangeText`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setRangeText), which the browser handles as an edit.
+3. Filters out the `input`/`change` events that `setRangeText` synthesizes so they don't reach the consumer's `onChange`.
+
+User keystrokes still reach the consumer's `onChange` normally.
+
 ## Known limitations
 
-- The text cursor's blink animation resets on every `value` update. Under very high update frequency the caret can appear to stop blinking.
-- Replacing `value` wipes the browser's native undo history for that field, so the built-in undo/redo doesn't work. You'll need to implement undo at the application layer.
+- The caret's blink animation resets on every remote update. Frequent updates make the caret look static.
+- Native undo (`Cmd`/`Ctrl`+`Z`) doesn't undo remote edits. Implement undo at the application layer.
+- Mouse-drag selection (right-to-left) can collapse if a remote update lands mid-drag.
+- Firefox scrolls the textarea toward the caret on every remote update, even when the user has scrolled away.
+- Large fields (>10k characters) under heavy update frequency can chug; consider a richer editor.
+
+See the [known limitations guide](https://github.com/sanity-io/react-multiplayer-input/blob/main/docs/guide/known-limitations.md) for context.
 
 ## Development
 
-This repo is a pnpm workspace. The package lives at the root; a Vite demo lives in `docs/`.
+This repo is a pnpm workspace. The package lives at the root; a VitePress documentation site lives in `docs/`.
 
 ```sh
 pnpm install
-pnpm test          # vitest, including type-level tests
+pnpm test          # jsdom unit tests + type-level tests
+pnpm test:browser  # Playwright/Chromium browser tests (requires Playwright install)
+pnpm test:all      # both
 pnpm typecheck
 pnpm lint
 pnpm build
-pnpm docs          # run the local demo
+pnpm docs          # run the local VitePress site
 ```
 
 ## Credits
 
-Cursor preservation algorithm by Neil Fraser (Google MobWrite). Diff and fuzzy match via [`@sanity/diff-match-patch`](https://github.com/sanity-io/diff-match-patch).
+Diff computation via [`@sanity/diff-match-patch`](https://github.com/sanity-io/diff-match-patch). Caret preservation via the browser's `setRangeText('preserve')` per the [W3C HTML spec](https://html.spec.whatwg.org/multipage/input.html#dom-textarea/input-setrangetext).
 
 ## License
 

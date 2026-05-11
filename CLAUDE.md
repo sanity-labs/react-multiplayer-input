@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-`react-multiplayer-input` is a drop-in replacement for native `<input>` / `<textarea>` (and compatible React components) that preserves cursor position and scroll state when `value` is updated by a remote source — for collaborative/multiplayer editing scenarios.
+`react-multiplayer-input` is a drop-in replacement for native `<input>` / `<textarea>` (and compatible React components) that preserves caret, selection, and scroll position when `value` is updated by a remote source — for collaborative/multiplayer editing scenarios.
 
-Published as an ESM + CJS dual package via `@sanity/pkg-utils`. Built against React 19. Package is currently marked `private` in `package.json`.
+Published as an ESM + CJS dual package via `@sanity/pkg-utils`. Built against React 19. Peer-depends on `react ^19`.
 
 ## Commands
 
@@ -14,31 +14,34 @@ This is a pnpm workspace (root + `docs/`). Use pnpm.
 
 - `pnpm build` — build the package (`pkg build --strict --check --clean`)
 - `pnpm dev` — watch-mode build (`pkg watch --strict`)
-- `pnpm test` — `vitest run --typecheck` (runs both runtime tests and `*.test-d.tsx` type-level tests)
-- `pnpm test:watch` — vitest watch with typecheck enabled
+- `pnpm test` — jsdom unit tests + type-level tests (the `unit` vitest project)
+- `pnpm test:browser` — browser tests (the `browser` vitest project, runs against Chromium, Firefox, and WebKit via Playwright)
+- `pnpm test:browser --browser=chromium` — run browser tests against a single engine (also `firefox`, `webkit`)
+- `pnpm test:all` — both projects
+- `pnpm test:watch` — vitest watch on the unit project
 - `pnpm test:ui` — vitest UI
-- Run a single test file: `pnpm vitest run --typecheck src/__test__/types.test-d.tsx`
+- Run a single test file: `pnpm vitest run src/utils/applyDiff.test.ts`
 - `pnpm typecheck` — typecheck against `tsconfig.dist.json` (the publishable surface)
 - `pnpm typecheck:docs` — typecheck the docs workspace
 - `pnpm lint` — eslint over the repo
-- `pnpm check` — typecheck + build + test (use before pushing)
-- `pnpm docs` — run the docs/demo Vite app (`pnpm --filter docs run dev`)
+- `pnpm check` — typecheck + build + unit tests (use before pushing). Browser tests are *not* in `check` — run `pnpm test:browser` separately if you have Playwright installed.
+- `pnpm docs` — run the local VitePress site
 
 Releases are automated via `release-please` (see `.github/workflows/release-please.yml`); do not bump versions manually.
 
 ## Architecture
 
-The core idea: native inputs lose cursor/selection state when their `value` prop is replaced wholesale (as happens in a CRDT/OT collaborative session). This library wraps an input so that on every value change it (a) captures a fingerprint of the cursor's surrounding text *before* React commits the update, then (b) re-locates that fingerprint in the new text and restores selection + scroll *after* commit.
+The core idea: native inputs lose caret/selection state when their `value` prop is replaced wholesale (as happens in a CRDT/OT collaborative session). This library wraps an input so that on every `value` change it patches the DOM with character-level ops via `HTMLInputElement.setRangeText(text, start, end, 'preserve')` — *before* React's controlled-input commit runs. The browser preserves caret, selection, and scroll per the `'preserve'` selectMode contract. React skips its own `element.value = nextValue` write because the DOM already matches.
 
 ### Key files
 
-- `src/createMultiplayerInput.tsx` — the factory. Returns a `forwardRef`-wrapped class component. **It must remain a class component** because cursor capture relies on `getSnapshotBeforeUpdate` — React function components have no equivalent hook (see the comment in the file). The wrapper:
-  - Tracks a `#selectionAnchor` updated on `mousedown` → `selectionchange` → `mouseup`, used to determine selection direction (`forward` / `backward` / `none`).
-  - In `getSnapshotBeforeUpdate`, calls `captureCursor` when `value` changes.
-  - In `componentDidUpdate`, calls `restoreCursor` with the captured snapshot.
-  - `forwardRef` is used so consumers can still pass a ref to the underlying DOM element; the ref is forwarded via an internal `elementRef` prop because class components can't receive forwarded refs directly.
+- `src/createMultiplayerInput.tsx` — the factory. Returns a function component that:
+  - Renders the underlying input/textarea as **uncontrolled** (`defaultValue`, not `value`), so React never writes `el.value = X` and never snaps the caret. The initial value is captured once via `useRef`.
+  - Has a `useLayoutEffect` keyed on `value`: when the prop differs from the DOM value, calls `applyDiff(element, nextValue)` to patch the DOM.
+  - Wraps the consumer's `onChange` so events fired by our own `applyDiff` (via `setRangeText`'s `input` event) are filtered out via an `applyingRef` flag — the consumer only hears about genuine user input.
+  - From the outside, the API still looks fully controlled (`value` + `onChange`). Internally, the DOM is the source of truth.
 
-- `src/utils/cursor.ts` — `captureCursor` / `restoreCursor`. Algorithm is ported from Google MobWrite (see the linked Neil Fraser article at the top of the file). It records `padLength=16` characters of prefix+suffix around each selection endpoint as a fingerprint, then uses `@sanity/diff-match-patch`'s `match` + `makeDiff` + `xIndex` to relocate the cursor in the new text with fuzzy matching (`matchDistance: 1000`, `matchThreshold: 0.8`). `padLength` of 16 is half of `MAX_BITS` in diff-match-patch's patch constants — don't raise it past that without checking the upstream constant.
+- `src/utils/applyDiff.ts` — single function `applyDiff(element, nextValue)`. Computes `makeDiff(element.value, nextValue)` from `@sanity/diff-match-patch`, walks the diff, applies each insert/delete via `setRangeText(text, start, end, 'preserve')`. Track `offset` across ops: advance on EQUAL and INSERT, don't advance on DELETE (the DOM has shrunk under you).
 
 - `src/MultiplayerInput.tsx` / `src/MultiplayerTextArea.tsx` — pre-built specializations: `createMultiplayerInput('input')` and `createMultiplayerInput('textarea')`.
 
@@ -51,15 +54,21 @@ The core idea: native inputs lose cursor/selection state when their `value` prop
 - For `'textarea'`: full `ComponentProps<'textarea'>`.
 - For a custom component: original props but `value` is forced to `string`.
 
-Type-level tests live in `src/__test__/types.test-d.tsx` and are executed by vitest's `--typecheck` flag (configured via `tsconfig.dist.json` in `vitest.config.ts`). When changing the generic, update those `@ts-expect-error` cases.
+Type-level tests live in `src/__test__/types.test-d.tsx` and are executed by vitest's `--typecheck` (configured via `tsconfig.dist.json` in `vitest.config.ts`). When changing the generic, update those `@ts-expect-error` cases.
 
-## Known caveats (from README)
+### Tests
 
-- Text cursor blinking resets on each `value` update; high-frequency updates make the caret appear static.
-- The browser's native undo history is wiped when `value` is replaced — no undo support.
+- `src/utils/applyDiff.test.ts` — jsdom unit tests for `applyDiff`. jsdom 29 implements `setRangeText` with correct `'preserve'` semantics.
+- `src/__test__/browser/*.test.tsx` — `vitest-browser-react` + Playwright. Cover caret preservation, range selection preservation, scroll preservation, ref forwarding, selection direction across remote updates, and native undo behavior. Runs against Chromium, Firefox, and WebKit. CI runs them per-engine via `.github/workflows/browser-tests.yml`. Local Firefox/WebKit may fail to launch under macOS sandboxing (e.g. agent-safehouse only has a Chromium profile); use `--browser=chromium` to filter.
+
+## Constraints worth knowing
+
+- The consumer-facing API is **controlled** (`value` + `onChange`), but the underlying DOM input is rendered uncontrolled internally. Consumers can't pass `defaultValue` — that slot belongs to the wrapper for capturing the initial value.
+- The text cursor's blink animation resets on each `value` update. Under very high update frequency the caret can appear static.
+- Native undo: a user can undo their own keystrokes, but can't undo a remote peer's edit (the `setRangeText` calls used to apply remote updates don't push undo entries). In Chromium, a remote update also seems to invalidate the user's existing undo entries.
 
 ## Code style
 
-- ESLint config is flat (`eslint.config.mjs`): `simple-import-sort` enforces import ordering, `consistent-type-imports` requires inline `type` imports, `no-console: error`.
+- ESLint config is flat (`eslint.config.mjs`): `simple-import-sort` enforces import ordering, `consistent-type-imports` requires inline `type` imports, `no-console: error`. The `unused-imports/no-unused-vars` rule ignores `_`-prefixed names.
 - Prettier config is `@sanity/prettier-config`.
-- The `docs/` workspace is a separate Vite app demoing the components with a `BroadcastChannel`-based store to simulate multiplayer edits across browser tabs.
+- The `docs/` workspace is a VitePress site at `docs/index.md` + `docs/guide/` + `docs/api/`. The live demo at the bottom of the home page uses a `BroadcastChannel`-based store to simulate multiplayer edits across browser tabs.

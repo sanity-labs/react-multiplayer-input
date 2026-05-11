@@ -31,7 +31,7 @@ Factory that wraps `'input'`, `'textarea'`, or any React component whose props i
 ```ts
 function createMultiplayerInput<C extends 'input' | 'textarea' | ComponentType<any>>(
   Component: C,
-): ForwardRefExoticComponent<ReturnedComponentProps<C>>
+): ComponentType<ReturnedComponentProps<C>>
 ```
 
 The return type is conditionally narrowed:
