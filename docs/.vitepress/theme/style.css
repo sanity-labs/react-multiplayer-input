@@ -1,0 +1,94 @@
+.demo-island {
+  margin: 1.5rem 0;
+}
+
+.rmi-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rmi-demo__toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.rmi-demo__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  font: inherit;
+  font-size: 0.85rem;
+  line-height: 1;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.rmi-demo__button:hover:not(:disabled) {
+  background: var(--vp-c-bg-mute);
+  border-color: var(--vp-c-brand-1);
+}
+
+.rmi-demo__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rmi-demo__panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 720px) {
+  .rmi-demo__panes {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rmi-demo__pane {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.rmi-demo__pane-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rmi-demo__textarea {
+  width: 100%;
+  min-height: 22rem;
+  padding: 0.75rem 1rem;
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.rmi-demo__textarea:focus {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: -1px;
+  border-color: transparent;
+}
+
+.rmi-demo__hint {
+  font-size: 0.85rem;
+  color: var(--vp-c-text-2);
+}

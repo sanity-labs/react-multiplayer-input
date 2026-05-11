@@ -44,6 +44,8 @@
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "docs": "pnpm --filter docs run dev",
+    "docs:build": "pnpm --filter docs run build",
+    "docs:preview": "pnpm --filter docs run preview",
     "check": "run-s typecheck pkg:build test",
     "dev": "run-p pkg:watch",
     "prepublishOnly": "npm run build"

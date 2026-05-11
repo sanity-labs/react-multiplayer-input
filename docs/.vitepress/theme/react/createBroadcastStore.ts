@@ -7,9 +7,7 @@ export type BroadcastStore<T> = {
   setValue: (nextValue: T) => void
 }
 
-export function createBroadcastStore<T>(name: string, initialValue: T): BroadcastStore<T>
-export function createBroadcastStore<T>(name: string): BroadcastStore<T | undefined>
-export function createBroadcastStore<T>(name: string, initialValue?: T) {
+export function createBroadcastStore<T>(name: string, initialValue: T): BroadcastStore<T> {
   let snapshot = initialValue
   const channel = new BroadcastChannel(name)
 
