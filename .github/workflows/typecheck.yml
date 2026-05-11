@@ -39,4 +39,4 @@ jobs:
         run: |
           node -v
           pnpm run typecheck
-          pnpm run typecheck:examples
+          pnpm run typecheck:docs

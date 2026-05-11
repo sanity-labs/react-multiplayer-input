@@ -1,5 +1,10 @@
 packages:
-  # all packages in direct subdirs of packages/
   - '.'
-  # all packages in subdirs of components/
   - 'docs'
+
+# Needed for prettier to be able to use the plugin specified by @sanity/prettier-config
+publicHoistPattern:
+  - prettier-plugin-packagejson
+
+allowBuilds:
+  esbuild: false
