@@ -2,16 +2,8 @@
   "include": ["./**/*.ts", "./**/*.tsx"],
   "extends": "../tsconfig.settings.json",
   "compilerOptions": {
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "esModuleInterop": true,
-    "target": "esnext",
-    "skipLibCheck": true,
-    "strict": true,
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "noEmit": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
     "paths": {

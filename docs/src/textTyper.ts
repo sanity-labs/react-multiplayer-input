@@ -1,7 +1,4 @@
-const triggerInputEvent = (
-  input: HTMLInputElement | HTMLTextAreaElement,
-  nextValue: string,
-) => {
+const triggerInputEvent = (input: HTMLInputElement | HTMLTextAreaElement, nextValue: string) => {
   const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
     input.constructor.prototype,
     'value',
@@ -27,8 +24,7 @@ export function startTyping(
     const [before, after] = splitIndex(input.value || '', cursor + 1)
     const char = text[current]
 
-    const nextVal =
-      (char === '\b' ? before.slice(0, -1) : before + char) + (after || '')
+    const nextVal = (char === '\b' ? before.slice(0, -1) : before + char) + (after || '')
     triggerInputEvent(input, nextVal)
     current++
     if (current < text.length) {

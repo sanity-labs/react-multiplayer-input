@@ -3,7 +3,7 @@ import Helmet from 'react-helmet'
 
 import {Root} from '../Root'
 
-export function GettingStarted(props: {}) {
+export function GettingStarted() {
   return (
     <Root>
       <Helmet>
