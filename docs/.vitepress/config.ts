@@ -16,7 +16,7 @@ export default defineConfig({
       {text: 'API', link: '/api/'},
       {
         text: 'GitHub',
-        link: 'https://github.com/sanity-io/react-multiplayer-input',
+        link: 'https://github.com/sanity-labs/react-multiplayer-input',
       },
     ],
     sidebar: {
@@ -38,11 +38,11 @@ export default defineConfig({
       ],
     },
     socialLinks: [
-      {icon: 'github', link: 'https://github.com/sanity-io/react-multiplayer-input'},
+      {icon: 'github', link: 'https://github.com/sanity-labs/react-multiplayer-input'},
     ],
     editLink: {
       pattern:
-        'https://github.com/sanity-io/react-multiplayer-input/edit/main/docs/:path',
+        'https://github.com/sanity-labs/react-multiplayer-input/edit/main/docs/:path',
       text: 'Edit this page on GitHub',
     },
     footer: {

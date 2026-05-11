@@ -94,7 +94,7 @@ User keystrokes still reach the consumer's `onChange` normally.
 - Firefox scrolls the textarea toward the caret on every remote update, even when the user has scrolled away.
 - Large fields (>10k characters) under heavy update frequency can chug; consider a richer editor.
 
-See the [known limitations guide](https://github.com/sanity-io/react-multiplayer-input/blob/main/docs/guide/known-limitations.md) for context.
+See the [known limitations guide](https://github.com/sanity-labs/react-multiplayer-input/blob/main/docs/guide/known-limitations.md) for context.
 
 ## Development
 

@@ -5,7 +5,7 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bjoerge/react-multiplayer-input.git"
+    "url": "git+https://github.com/sanity-labs/react-multiplayer-input.git"
   },
   "license": "MIT",
   "author": "Bjørge Næss <bjoerge@gmail.com>",
