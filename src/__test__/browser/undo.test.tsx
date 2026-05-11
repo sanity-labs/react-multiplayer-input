@@ -27,6 +27,12 @@ async function mount(initialValue: string): Promise<Mount> {
   return m.current!
 }
 
+// The native undo shortcut differs by platform: Cmd+Z on macOS, Ctrl+Z
+// elsewhere. Picking the right one matters in CI (Linux runners) vs. local
+// macOS development.
+const isMac = typeof navigator !== 'undefined' && /Mac/.test(navigator.platform)
+const undoKeystroke = isMac ? '{Meta>}z{/Meta}' : '{Control>}z{/Control}'
+
 describe('native undo', () => {
   test('the user can undo their own keystrokes', async () => {
     const {element: el} = await mount('hello')
@@ -36,7 +42,7 @@ describe('native undo', () => {
     await userEvent.type(el, '!')
     await expect.poll(() => el.value).toBe('hello!')
 
-    await userEvent.keyboard('{Meta>}z{/Meta}')
+    await userEvent.keyboard(undoKeystroke)
 
     // Native undo of typing should at minimum remove the last character.
     // (Browsers group typing into larger undo transactions, but a single
@@ -51,7 +57,7 @@ describe('native undo', () => {
     setValue('hello world')
     await expect.poll(() => el.value).toBe('hello world')
 
-    await userEvent.keyboard('{Meta>}z{/Meta}')
+    await userEvent.keyboard(undoKeystroke)
 
     // setRangeText edits don't push undo entries, so Cmd+Z is a no-op here.
     // If this assertion ever fails (i.e. el.value becomes 'hello'), it means
