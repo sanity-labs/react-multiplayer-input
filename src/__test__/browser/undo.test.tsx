@@ -33,8 +33,17 @@ async function mount(initialValue: string): Promise<Mount> {
 const isMac = typeof navigator !== 'undefined' && /Mac/.test(navigator.platform)
 const undoKeystroke = isMac ? '{Meta>}z{/Meta}' : '{Control>}z{/Control}'
 
+// Playwright's headless WebKit on Linux doesn't honor either Cmd+Z or Ctrl+Z
+// as undo — real Safari on macOS does. Skip the keystroke-driven assertion
+// when running on that build.
+const isLinuxWebKit =
+  typeof navigator !== 'undefined' &&
+  /AppleWebKit/.test(navigator.userAgent) &&
+  !/Chrome/.test(navigator.userAgent) &&
+  /Linux/.test(navigator.userAgent)
+
 describe('native undo', () => {
-  test('the user can undo their own keystrokes', async () => {
+  test.skipIf(isLinuxWebKit)('the user can undo their own keystrokes', async () => {
     const {element: el} = await mount('hello')
     el.focus()
     el.setSelectionRange(5, 5)
