@@ -102,18 +102,15 @@ describe('MultiplayerTextArea', () => {
   })
 
   const isFirefox = typeof navigator !== 'undefined' && /Firefox/.test(navigator.userAgent)
-  // Headless Playwright WebKit on Linux yanks scroll on setRangeText/
-  // setSelectionRange, unlike real Safari on macOS (which preserves scroll
-  // like Chromium). This is a difference in the playwright-webkit build, not
-  // a regression we can fix from userland — skip the engine-level assertion
-  // when running there.
-  const isLinuxWebKit =
+  // Playwright's headless WebKit (any platform) yanks scroll on setRangeText/
+  // setSelectionRange — real Safari preserves it. Playwright spoofs a macOS-
+  // shaped UA on Linux, so this detection runs against userAgent + vendor.
+  const isWebKit =
     typeof navigator !== 'undefined' &&
     /AppleWebKit/.test(navigator.userAgent) &&
-    !/Chrome/.test(navigator.userAgent) &&
-    /Linux/.test(navigator.userAgent)
+    !/Chrome/.test(navigator.userAgent)
 
-  test.skipIf(isLinuxWebKit)(
+  test.skipIf(isWebKit)(
     'preserves scroll position when the user scrolls away from the caret',
     async () => {
       const longText = Array.from({length: 200}, (_, i) => `line ${i}`).join('\n')
