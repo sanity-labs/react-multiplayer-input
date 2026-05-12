@@ -28,16 +28,16 @@ function activateTabInGroup(group: Element, label: string) {
   if (!blocks) return
 
   for (let i = 0; i < labels.length; i++) {
-    if (labels[i].textContent?.trim() === label) {
-      if (inputs[i]) inputs[i].checked = true
-      for (const child of Array.from(blocks.children)) {
-        child.classList.remove('active')
-      }
-      if (blocks.children[i]) {
-        blocks.children[i].classList.add('active')
-      }
-      return
+    const labelEl = labels[i]
+    if (labelEl?.textContent?.trim() !== label) continue
+    const input = inputs[i]
+    if (input) input.checked = true
+    for (const child of Array.from(blocks.children)) {
+      child.classList.remove('active')
     }
+    const block = blocks.children[i]
+    if (block) block.classList.add('active')
+    return
   }
 }
 
