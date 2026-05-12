@@ -1,17 +1,21 @@
 # react-multiplayer-input
 
+[![Open on npmx.dev](https://npmx.dev/api/registry/badge/name/react-multiplayer-input)](https://npmx.dev/package/react-multiplayer-input)
+[![Open on npmx.dev](https://npmx.dev/api/registry/badge/version/react-multiplayer-input)](https://npmx.dev/package/react-multiplayer-input)
+[![Open on npmx.dev](https://npmx.dev/api/registry/badge/updated/react-multiplayer-input)](https://npmx.dev/package/react-multiplayer-input)
+
 React drop-in for `<input>` and `<textarea>` that preserves caret, selection, and scroll state during collaborative editing.
 
-## The problem
+## Why?
 
 When a text input's `value` prop is replaced with a new string, the browser moves the caret to the end of the field and resets the scroll position. In a collaborative editing session, every remote peer's edit triggers this, so the user can't comfortably type while peers are also typing.
 
-This library wraps an input so that on a `value` change, the DOM is patched via `setRangeText` (an edit, not a replacement) rather than a wholesale assignment. The browser keeps the caret, selection, and scroll position attached to the surrounding text.
+This library wraps an input so that on a `value` change, the DOM is patched via `setRangeText` (an edit, not a replacement) rather than a wholesale assignment. The browser keeps the caret and selection attached to the surrounding text, and scroll position is preserved on Chromium and Safari. See [Known limitations](https://github.com/sanity-labs/react-multiplayer-input/blob/main/docs/guide/known-limitations.md) for Firefox-specific behavior.
 
 ## Install
 
 ```sh
-npm install react-multiplayer-input
+pnpm add react-multiplayer-input
 ```
 
 Peer dependency: `react` ^19.
@@ -49,7 +53,7 @@ Only text-like input types are accepted: `text`, `search`, `tel`, `url`, `passwo
 
 ### Wrapping a custom component
 
-If you already have a styled input or are using a component from a UI library, wrap it with `createMultiplayerInput`. The wrapped component must accept a `ref` that resolves to an `HTMLInputElement` or `HTMLTextAreaElement`, and must accept `defaultValue` and `onChange` props (the wrapper renders the underlying component as uncontrolled internally — see [How it works](#how-it-works)).
+If you already have a styled input or are using a component from a UI library, wrap it with `createMultiplayerInput`. The wrapped component must accept a `ref` that resolves to an `HTMLInputElement` or `HTMLTextAreaElement`, and must accept `defaultValue` and `onChange` props (the wrapper renders the underlying component as uncontrolled internally; see [How it works](#how-it-works)).
 
 ```tsx
 import {createMultiplayerInput} from 'react-multiplayer-input'
@@ -68,9 +72,9 @@ import {
 } from 'react-multiplayer-input'
 ```
 
-- **`MultiplayerInput`** — wrapped `<input>`. Restricted to text-like `type` values.
-- **`MultiplayerTextArea`** — wrapped `<textarea>`.
-- **`createMultiplayerInput(Component)`** — factory that wraps `'input'`, `'textarea'`, or any React component whose props include `value: string` and which forwards refs to an underlying input or textarea element.
+- **`MultiplayerInput`**: wrapped `<input>`. Restricted to text-like `type` values.
+- **`MultiplayerTextArea`**: wrapped `<textarea>`.
+- **`createMultiplayerInput(Component)`**: factory that wraps `'input'`, `'textarea'`, or any React component whose props include `value: string` and which forwards refs to an underlying input or textarea element.
 
 All three forward refs to the underlying DOM element.
 

@@ -19,9 +19,9 @@ const ref = useRef<HTMLInputElement>(null)
 
 ## How the wrapper avoids React's caret-snap
 
-A naïve controlled input writes `element.value = newValue` on every render, which causes the browser to reset the caret. The wrapper sidesteps this by rendering the underlying input/textarea as **uncontrolled** internally — it passes `defaultValue`, not `value`, so React never tells the DOM what the value should be. When `value` changes from the outside, a `useLayoutEffect` diffs it against the live DOM value and patches via `setRangeText`, which the browser treats as an edit (caret and selection adjust around the change).
+A controlled input writes `element.value = newValue` on every render, which resets the caret. The wrapper renders the underlying input/textarea as **uncontrolled** internally. It passes `defaultValue`, not `value`, so React never writes back to the DOM. When `value` changes from the outside, a `useLayoutEffect` diffs it against the live DOM value and patches via `setRangeText`, which the browser treats as an edit (caret and selection adjust around the change).
 
-From the outside, the API is still controlled — `value` and `onChange` behave as expected. The wrapper bypasses React's value-tracking machinery in the middle, and suppresses change events that its own diff applications fire.
+The consumer-facing API is still `value` + `onChange`. The wrapper suppresses the change events its own `setRangeText` calls synthesize, so the consumer only hears about real user input.
 
 Two implications for wrapping a custom component:
 

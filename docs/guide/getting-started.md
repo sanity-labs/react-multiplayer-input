@@ -2,26 +2,30 @@
 
 `react-multiplayer-input` is a drop-in replacement for native `<input>` and `<textarea>` that preserves cursor, selection, and scroll position during collaborative editing.
 
-## The problem
+## Why?
 
-When a text input's `value` is replaced wholesale — as happens when a remote peer's edit arrives in a CRDT or OT session — the browser snaps the caret to the end of the field and resets the scroll position. The user loses their place mid-keystroke, mid-selection, mid-scroll.
+When a text input's `value` is replaced wholesale (as happens when a remote peer's edit arrives in a CRDT or OT session), the browser snaps the caret to the end of the field and resets the scroll position. The user loses their place.
 
-This library wraps an input so that when `value` changes, the DOM is patched via `setRangeText('preserve')` — an edit operation rather than a full replacement — before React's controlled-input commit runs. The browser preserves the caret, selection, and scroll position for free, per the W3C `'preserve'` selectMode contract. The character-level diff between the old and new value is computed with [`@sanity/diff-match-patch`](https://github.com/sanity-io/diff-match-patch).
+This library wraps an input so that when `value` changes, the DOM is patched via `setRangeText('preserve')` (an edit, not a full replacement) before React's controlled-input commit runs. The browser preserves the caret, selection, and scroll position per the W3C `'preserve'` selectMode contract. The character-level diff between the old and new value is computed with [`@sanity/diff-match-patch`](https://github.com/sanity-io/diff-match-patch).
 
 ## Install
 
 ::: code-group
 
-```sh [npm]
-npm install react-multiplayer-input
-```
-
 ```sh [pnpm]
 pnpm add react-multiplayer-input
 ```
 
+```sh [npm]
+npm install react-multiplayer-input
+```
+
 ```sh [yarn]
 yarn add react-multiplayer-input
+```
+
+```sh [bun]
+bun add react-multiplayer-input
 ```
 
 :::

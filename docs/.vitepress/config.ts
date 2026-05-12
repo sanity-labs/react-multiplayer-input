@@ -1,8 +1,17 @@
 import path from 'node:path'
 
 import {defineConfig} from 'vitepress'
+import {
+  groupIconMdPlugin,
+  groupIconVitePlugin,
+} from 'vitepress-plugin-group-icons'
 
 export default defineConfig({
+  markdown: {
+    config(md) {
+      md.use(groupIconMdPlugin)
+    },
+  },
   title: 'React Multiplayer Input',
   description:
     'Drop-in replacement for native input and textarea elements that preserves caret, selection, and scroll during collaborative editing.',
@@ -52,6 +61,7 @@ export default defineConfig({
     search: {provider: 'local'},
   },
   vite: {
+    plugins: [groupIconVitePlugin()],
     resolve: {
       alias: {
         'react-multiplayer-input': path.resolve(__dirname, '../../src'),

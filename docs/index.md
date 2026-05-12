@@ -16,12 +16,42 @@ features:
   - title: Caret-preserving
     details: A remote value update leaves the caret and selection where the user had them.
   - title: Scroll-preserving
-    details: Scroll position is unchanged when a remote update lands (Chromium and WebKit).
+    details: Scroll position is unchanged when a remote update lands on Chromium and Safari.
   - title: Drop-in
     details: Wraps &lt;input&gt;, &lt;textarea&gt;, or a styled custom component.
 ---
 
 <div style="max-width: 960px; margin: 3rem auto; padding: 0 1.5rem;">
+
+<p>
+  <a href="https://npmx.dev/package/react-multiplayer-input"><img alt="Open on npmx.dev" src="https://npmx.dev/api/registry/badge/name/react-multiplayer-input" /></a>
+  <a href="https://npmx.dev/package/react-multiplayer-input"><img alt="Open on npmx.dev" src="https://npmx.dev/api/registry/badge/version/react-multiplayer-input" /></a>
+  <a href="https://npmx.dev/package/react-multiplayer-input"><img alt="Open on npmx.dev" src="https://npmx.dev/api/registry/badge/updated/react-multiplayer-input" /></a>
+</p>
+
+## Install
+
+::: code-group
+
+```sh [pnpm]
+pnpm add react-multiplayer-input
+```
+
+```sh [npm]
+npm install react-multiplayer-input
+```
+
+```sh [yarn]
+yarn add react-multiplayer-input
+```
+
+```sh [bun]
+bun add react-multiplayer-input
+```
+
+:::
+
+Peer dependency: `react` ^19. See the [getting started guide](/guide/getting-started) for usage.
 
 ## Live demo
 
