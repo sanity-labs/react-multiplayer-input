@@ -23,10 +23,10 @@ features:
 
 <div style="max-width: 960px; margin: 3rem auto; padding: 0 1.5rem;">
 
-<p>
-  <a href="https://npmx.dev/package/react-multiplayer-input"><img alt="Open on npmx.dev" src="https://npmx.dev/api/registry/badge/name/react-multiplayer-input" /></a>
-  <a href="https://npmx.dev/package/react-multiplayer-input"><img alt="Open on npmx.dev" src="https://npmx.dev/api/registry/badge/version/react-multiplayer-input" /></a>
-  <a href="https://npmx.dev/package/react-multiplayer-input"><img alt="Open on npmx.dev" src="https://npmx.dev/api/registry/badge/updated/react-multiplayer-input" /></a>
+<p style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
+  <a href="https://npmx.dev/package/react-multiplayer-input"><img alt="npm" src="https://npmx.dev/api/registry/badge/name/react-multiplayer-input" /></a>
+  <a href="https://npmx.dev/package/react-multiplayer-input"><img alt="version" src="https://npmx.dev/api/registry/badge/version/react-multiplayer-input" /></a>
+  <a href="https://npmx.dev/package/react-multiplayer-input"><img alt="updated" src="https://npmx.dev/api/registry/badge/updated/react-multiplayer-input" /></a>
 </p>
 
 ## Install
