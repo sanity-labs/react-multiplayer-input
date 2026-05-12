@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/sanity-labs/react-multiplayer-input/compare/react-multiplayer-input-v0.1.0...react-multiplayer-input-v0.1.1) (2026-05-12)
+
+
+### Miscellaneous Chores
+
+* trigger release ([95bd62a](https://github.com/sanity-labs/react-multiplayer-input/commit/95bd62ad815cdc53c055a758bd6ff5b9c31d61fc))
+
 ## 0.1.0 (2026-05-11)
 
 
